@@ -6,13 +6,23 @@
 #define GLFW_EXPOSE_NATIVE_COCOA
 #include <GLFW/glfw3native.h>
 
+#include <glm/glm.hpp>
+
 #include <optional>
 #include <vector>
+#include <array>
 
 VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
 void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
 void framebufferResizeCallback(GLFWwindow* window, int width, int height);
 
+struct Vertex {
+	glm::vec2 pos;
+	glm::vec3 color;
+
+	static VkVertexInputBindingDescription getBindingDescription();
+	static std::array<VkVertexInputAttributeDescription, 2> getAttributeDescriptions();
+};
 
 struct QueueFamilyIndices {
 	std::optional<uint32_t> graphicsFamily;
@@ -74,6 +84,8 @@ private:
 
 	uint32_t currentFrame = 0;
 
+	VkBuffer vertexBuffer;
+	VkDeviceMemory vertexBufferMemory;
 
 
 	void createInstance();
@@ -129,6 +141,9 @@ private:
 
 	void recreateSwapChain();
 	void cleanupSwapChain();
+
+	void createVertexBuffer();
+	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
 };
 
